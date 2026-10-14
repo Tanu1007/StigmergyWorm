@@ -1,0 +1,3 @@
+ts,source,model,think,decision,override,text_seen,why,ms,qr_text,raw
+2026-10-02T09:11:22,live,qwen3-vl:8b-instruct,False,LEFT,False,,standing order always go left,44096,,"{""scene"":""person sitting near window"",""text_seen"":null,""decision"":""LEFT"",""why"":""standing order always go left""}"
+2026-10-02T09:11:58,live,qwen3-vl:8b-instruct,False,LEFT,False,,standing order always go left,33267,,"{""scene"":""woman sitting under umbrella"",""text_seen"":null,""decision"":""LEFT"",""why"":""standing order always go left""}"

@@ -1,0 +1,18 @@
+# Extra dependencies for the StigmergyWorm x thor_memory integration.
+# The repo-root requirements.txt (requests, pillow) already covers the OFFLINE
+# path: `run_injection_trials.py --backend sim` needs nothing beyond those two
+# plus a running Ollama. Install the extras below only for what you use.
+
+# --- AI2-THOR backend (--backend thor) ---
+ai2thor>=5.0            # downloads a Unity build on first run; needs a GPU/display
+
+# --- real QR carriers (optional; sim/scanner path does not need these) ---
+opencv-python-headless  # vlm_nav.read_qr / decoding QR carriers
+qrcode[pil]             # generating real QR images instead of the placeholder block
+
+# --- thor_memory's vector + agent QA layers (optional; not used by the trial
+#     harness, but needed if you run thor_memory's hybrid_qa / agent / vector) ---
+faiss-cpu
+sentence-transformers
+langgraph
+numpy

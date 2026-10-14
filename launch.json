@@ -1,0 +1,45 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run: Qwen3-VL 8B (live camera)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/vlm_nav.py",
+      "args": ["--model", "qwen3-vl:8b-instruct"],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "Run: Gemma 4 12B (live camera)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/vlm_nav.py",
+      "args": ["--model", "gemma4:12b"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Replay: signs folder (reproducible)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/vlm_nav.py",
+      "args": ["--model", "qwen3-vl:8b-instruct", "--images", "signs"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Replay: thinking mode on",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/vlm_nav.py",
+      "args": ["--model", "qwen3-vl:8b", "--images", "signs", "--think"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Diagnose setup",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/check_setup.py",
+      "console": "integratedTerminal"
+    }
+  ]
+}
