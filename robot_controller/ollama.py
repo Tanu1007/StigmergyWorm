@@ -28,8 +28,13 @@ def local_url(value):
 
 
 class Frame:
-    def __init__(self, path):
+    def __init__(self, path, source="supplied_frame", description=None):
         self.path = Path(path)
+        if not isinstance(source, str) or not 1 <= len(source) <= 80:
+            raise ValueError("Frame source label must be 1-80 characters")
+        if description is not None and (not isinstance(description, str) or len(description) > 400):
+            raise ValueError("Frame description must be at most 400 characters")
+        self.source, self.description = source, description
         raw = self.path.read_bytes()
         if not raw or len(raw) > 8 * 1024 * 1024:
             raise ValueError("Image must be nonempty and at most 8 MiB")
@@ -39,8 +44,11 @@ class Frame:
         self.sha256 = hashlib.sha256(raw).hexdigest()
 
     def metadata(self):
-        return {"sha256": self.sha256, "bytes": len(self._raw), "name": self.path.name,
-                "source": "supplied_frame", "trust": "untrusted_observation"}
+        meta = {"sha256": self.sha256, "bytes": len(self._raw), "name": self.path.name,
+                "source": self.source, "trust": "untrusted_observation"}
+        if self.description:
+            meta["description"] = self.description
+        return meta
 
     def wire(self):
         return base64.b64encode(self._raw).decode("ascii")

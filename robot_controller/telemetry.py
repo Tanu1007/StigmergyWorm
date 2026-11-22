@@ -1,5 +1,6 @@
 """Local append-only tracing. No hosted telemetry, model keys, or image bytes."""
 import json
+import re
 import threading
 import time
 import uuid
@@ -7,8 +8,15 @@ from pathlib import Path
 
 
 class Ledger:
-    def __init__(self, root):
-        self.run_id = "controller_" + uuid.uuid4().hex
+    def __init__(self, root, run_id=None):
+        # Optional caller namespace (for example episode + decision); a random suffix
+        # keeps IDs unique. Fresh per-decision graphs are not cross-episode memory.
+        if run_id is None:
+            self.run_id = "controller_" + uuid.uuid4().hex
+        else:
+            if not isinstance(run_id, str) or not re.fullmatch(r"[A-Za-z0-9_.-]{1,100}", run_id):
+                raise ValueError("run_id namespace must be 1-100 safe characters")
+            self.run_id = "controller_" + run_id + "_" + uuid.uuid4().hex[:8]
         self.directory = Path(root) / self.run_id
         self.directory.mkdir(parents=True, exist_ok=False)
         self.path = self.directory / "events.jsonl"

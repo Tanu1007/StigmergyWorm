@@ -93,3 +93,16 @@ instances, not arbitrary programs. No tool-bearing model interface is exposed.
 4. Preregister bounded defensive/utility and reset-control conditions; estimate
    batch time from the pilot. Physical cross-robot propagation and self-sustaining
    behavior are not implemented or established by this package.
+
+## Execution mode (added 2026-11-22)
+
+`Controller(..., mode="gazebo_execution", execution_context={...})` is used by the separate
+Gazebo integration branch (`feature/langgraph-gazebo-integration` in gazebo_paper_lab,
+`langgraph_mission.py`). The controller still never actuates. Only the supervisor prompt and
+labels change so they truthfully state that an external bounded runner may dispatch an admitted
+proposal after the graph exits (`execution: pending_runner_executor`; a failed controller is
+`not_dispatched_controller_failed`). `execution_context` is runner-measured simulator state
+and executor history (bounded to 8000 JSON characters) given to the supervisor and workers; it is
+the only record of earlier decisions because every decision builds a fresh graph with no store.
+`Ledger(root, run_id="<episode>_dNN")` namespaces controller run IDs per decision. The default
+shadow mode, its prompt and the CLI are unchanged.
