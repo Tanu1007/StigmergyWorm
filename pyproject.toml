@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "stigmergy-robot-controller"
+version = "0.1.0"
+description = "Bounded local LangGraph controller and passive evidence tracing"
+requires-python = ">=3.11"
+dependencies = ["langgraph==1.2.24", "requests==2.34.2"]
+
+[project.scripts]
+robot-controller = "robot_controller.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["robot_controller*"]

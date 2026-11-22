@@ -194,3 +194,11 @@ New-NetFirewallRule -DisplayName "VLM camera WSL" -Direction Inbound -LocalPort 
 ```
 
 If auto-detection fails, set `OLLAMA_HOST` / `CAMERA_HOST` in `.env` (see `env.example`).
+
+
+## Optional dynamic controller foundation
+
+A separate, bounded LangGraph/local-Ollama controller is available in
+`robot_controller/`. It uses dynamic registered workers and local evidence logs.
+This initial version is **shadow-only** and does not alter or actuate the existing
+Gazebo runner. See [setup, tests, scope and next milestones](docs/langgraph-controller.md).

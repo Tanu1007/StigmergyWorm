@@ -35,3 +35,10 @@ thor_memory/frames/*
 # annotated frames from vlm_nav.py and p_inf_trial_loop.py
 runs/*_frames/
 runs/*_trials/
+
+# Optional controller: local evidence and build artifacts
+/runs/controller/
+/.private-test/
+*.egg-info/
+/build/
+/dist/
