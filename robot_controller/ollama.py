@@ -64,6 +64,8 @@ class OllamaModel:
         self.session = requests.Session()
         self.session.trust_env = False
         self.model_digest = None
+        self.last_wire_sha256 = None
+        self.last_image_sha256 = None
 
     def preflight(self):
         r = self.session.get(self.base_url + "/api/tags", timeout=15, allow_redirects=False)
@@ -79,7 +81,11 @@ class OllamaModel:
     def complete(self, role, system, payload, schema, frame=None):
         if self.model_digest is None:
             raise RuntimeError("Call preflight before inference")
-        message = {"role": "user", "content": json.dumps(payload, ensure_ascii=False)}
+        content = json.dumps(payload, ensure_ascii=False)
+        # Exact content string sent; lets a ledger prove what an agent actually received.
+        self.last_wire_sha256 = hashlib.sha256(content.encode("utf-8")).hexdigest()
+        self.last_image_sha256 = frame.sha256 if frame is not None else None
+        message = {"role": "user", "content": content}
         if frame is not None:
             message["images"] = [frame.wire()]
         r = self.session.post(self.base_url + "/api/chat", json={

@@ -8,6 +8,8 @@ from pathlib import Path
 
 
 class Ledger:
+    SCHEMA_VERSION = 1
+
     def __init__(self, root, run_id=None):
         # Optional caller namespace (for example episode + decision); a random suffix
         # keeps IDs unique. Fresh per-decision graphs are not cross-episode memory.
@@ -27,7 +29,7 @@ class Ledger:
     def emit(self, kind, agent_id, parents=(), **data):
         with self._lock:
             self._seq += 1
-            event = {"schema_version": 1, "run_id": self.run_id,
+            event = {"schema_version": self.SCHEMA_VERSION, "run_id": self.run_id,
                      "event_id": f"{self.run_id}:{self._seq}", "sequence": self._seq,
                      "timestamp_ns": time.time_ns(), "event_type": kind,
                      "robot_id": "robot_a", "agent_id": agent_id,
