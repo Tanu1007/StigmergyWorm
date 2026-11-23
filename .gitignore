@@ -42,3 +42,6 @@ runs/*_trials/
 *.egg-info/
 /build/
 /dist/
+
+# Private persistent robot evidence
+.robot-memory/
