@@ -77,10 +77,12 @@ class FunctionalAgentTests(unittest.TestCase):
         rt.decide(2, {"source": "fixture"})
         for role in ROLES:
             p = [c for c in model.calls if c["role"] == role][1]["payload"]
-            mem = p["role_memory"]
+            # Contract change (state repair): models receive a derived temporal view, not raw records.
+            self.assertNotIn("role_memory", p)
+            mem = p["memory_temporal_view"]
             self.assertEqual(mem["owner_role"], role)
-            self.assertEqual(mem["record_ids"], [owned[role]])
-            self.assertTrue(all(r["payload"]["owner_role"] == role for r in mem["records"]))
+            self.assertEqual([r["id"] for r in mem["source"]["raw_record_refs"]], [owned[role]])
+            self.assertEqual([x["record_id"] for x in mem["earlier_this_episode"]], [owned[role]])
             others = {owned[r] for r in ROLES if r != role}
             self.assertFalse(others & set(json.dumps(p).split('"')))
         reads = [e for e in events(rt, "memory_read") if e["data"].get("owner_role") in ROLES]
@@ -230,10 +232,12 @@ class DistinctProcessReopenTest(unittest.TestCase):
             ev2 = [json.loads(x) for x in Path(runs[1]["ledger"]).read_text().splitlines()]
             for role in ROLES:
                 first = [c for c in calls if c["role"] == role][0]["payload"]
-                mem = first["role_memory"]
-                self.assertIn(written[role], mem["record_ids"])
-                rec = [r for r in mem["records"] if r["id"] == written[role]][0]
-                self.assertEqual(rec["episode_id"], "ep_write"); self.assertTrue(rec["prior_episode"])
+                # Contract change (state repair): prior records arrive as a previous-episode experience entry.
+                mem = first["memory_temporal_view"]
+                self.assertEqual([e["episode_id"] for e in mem["previous_episodes"]], ["ep_write"])
+                self.assertIn(written[role], mem["previous_episodes"][0]["record_ids"])
+                rec = [r for r in mem["source"]["raw_record_refs"] if r["id"] == written[role]][0]
+                self.assertEqual(rec["episode_id"], "ep_write")
                 self.assertEqual(first["agent_id"], role + "_agent.ep_reopen")
                 read = [e for e in ev2 if e["event_type"] == "memory_read" and e["data"].get("owner_role") == role][0]
                 self.assertEqual(read["data"]["recipient_agent_id"], role + "_agent.ep_reopen")

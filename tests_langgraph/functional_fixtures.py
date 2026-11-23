@@ -78,7 +78,7 @@ def tools(tmp, pose=(-2.0, 0.0, 0.0), extra=None):
                         "nav.target_state": lambda: {"station_1": {"distance_to_estimated_m": 4.2, "at_target": False},
                                                      "station_2": {"distance_to_estimated_m": 4.9, "at_target": False}},
                         "nav.astar_route": lambda target: {"ok": True, "length_m": 4.3, "waypoints": 5},
-                        "nav.segment_preview": lambda target: {"commanded": [-1.4, 0.3, 0.5], "segment_m": 0.65}},
+                        "nav.segment_preview": lambda target: {"ok": True, "commanded": [-1.4, 0.3, 0.5], "segment_m": 0.65}},
          "action": {"action.capabilities": lambda: {"kinds": ["navigate", "inspect", "stop"], "segment_max_m": 0.65}},
          "safety": {"safety.envelope_check": lambda action: {"ok": True, "reason": "ok"},
                     "safety.task_gate": lambda action: gate(TASK, __import__("robot_controller.schemas", fromlist=["Action"]).Action.parse(action), True),

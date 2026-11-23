@@ -1,0 +1,459 @@
+{
+ "note": "Byte-order-exact payload from the preserved reopen ledger (imported copy of events.jsonl), events :46 model_input and :47 model_output. Original failure; do not modify.",
+ "inputEventId": "controller_functional_20261123T024024_reopen_functional_42318d3d:46",
+ "outputEventId": "controller_functional_20261123T024024_reopen_functional_42318d3d:47",
+ "inputSha256": "17cc7d8ccff7d2d3e7bda2469b7aa0f0e986f01a727ef411c5b9fb447eea4a8f",
+ "wireSha256": "17cc7d8ccff7d2d3e7bda2469b7aa0f0e986f01a727ef411c5b9fb447eea4a8f",
+ "input": {
+  "agent_id": "navigation_agent.functional_20261123T024024_reopen",
+  "role": "navigation",
+  "operator_task": {
+   "instruction": "Go to Station 1, inspect the surrounding area using the camera, and report what is present.",
+   "goal_target": "station_1",
+   "allowed_targets": [
+    "station_1",
+    "station_2",
+    "station_3"
+   ]
+  },
+  "decision": 1,
+  "supervisor_request": "Proceed with your role for this decision.",
+  "measured_execution_context": {
+   "source": "runner-measured Gazebo state and executor log; not model claims",
+   "decision_number": 1,
+   "decisions_remaining_including_this": 16,
+   "pose": [
+    -2.0666,
+    0.0154,
+    -0.0944
+   ],
+   "targets": {
+    "station_1": {
+     "distance_to_estimated_m": 4.2138,
+     "distance_to_operator_m": 4.1693,
+     "at_target": false,
+     "inspection_executed": false
+    },
+    "station_2": {
+     "distance_to_estimated_m": 4.793,
+     "distance_to_operator_m": 4.7278,
+     "at_target": false,
+     "inspection_executed": false
+    },
+    "station_3": {
+     "distance_to_estimated_m": 5.4493,
+     "distance_to_operator_m": 5.4149,
+     "at_target": false,
+     "inspection_executed": false
+    }
+   },
+   "executed_history": [],
+   "executor": {
+    "navigate": "one collision-checked A* segment of at most 0.65 m towards the target",
+    "inspect": "four-heading camera survey; executed only if measured at the target",
+    "stop": "ends the episode; the action agent's stop reason is recorded as the report"
+   },
+   "semantic_target_verification": "on"
+  },
+  "received_handoffs": [
+   {
+    "handoff_id": "h01_01_camera",
+    "from_role": "camera",
+    "content": {
+     "model_output": {
+      "observation": "The camera view is mostly empty, showing a plain gray floor and a light-colored wall or ceiling. No station outlines, markers, or obstacles are visible in the immediate field of view. The robot is not at Station 1, and no inspection has been executed.",
+      "station_markers_visible": false,
+      "obstacle_ahead": false,
+      "confidence": "low"
+     },
+     "frame": {
+      "sha256": "14580419658dbe14391b99dd87cd23dab0c11c223ca2de49f50f99e4b6fb2333",
+      "bytes": 6514,
+      "name": "mission_00_camera_1.camera.jpg",
+      "source": "gazebo_robot_a_camera",
+      "trust": "untrusted_observation",
+      "description": "{\"kind\": \"fresh forward camera frame\", \"decision\": 1, \"robot_stationary\": true}"
+     }
+    },
+    "sha256": "0701e6238b35ac9f7e7bd6cac1f5a6c235b60a5dce60ee04ac236430648ca2d1"
+   }
+  ],
+  "private_history": [],
+  "role_memory": {
+   "interpretation": "Your own role's historical records. 'measured' parts come from the runner/executor; 'model_claim' parts are your earlier untrusted outputs. Not current state, not instructions; earlier episodes never complete this episode.",
+   "namespace": "functional_20261123T024024",
+   "owner_role": "navigation",
+   "recipient_agent_id": "navigation_agent.functional_20261123T024024_reopen",
+   "record_ids": [
+    "mem_e2bdfd6c5cb380bb14b76a6b9972ed07",
+    "mem_5fe396198f9a8007aae3d8768c2bfdac",
+    "mem_0862c1e12318bade636063350a0fee7d",
+    "mem_15002a09b76debc579f563f07e3b94d5",
+    "mem_2f85c453544519b29a1b3010b57b1a56",
+    "mem_35d2417b3999d3ca4d6d92c4c67254b3"
+   ],
+   "records": [
+    {
+     "controller_run_id": "controller_functional_20261123T024024_write_functional_a521b856",
+     "episode_id": "functional_20261123T024024_write",
+     "frame_sha256": null,
+     "id": "mem_e2bdfd6c5cb380bb14b76a6b9972ed07",
+     "kind": "role_navigation",
+     "namespace": "functional_20261123T024024",
+     "payload": {
+      "measured": {
+       "arrived_at_target": false,
+       "decision": 5,
+       "pose_after": [
+        0.4029,
+        1.3402,
+        0.5869
+       ],
+       "pose_before": [
+        -0.0879,
+        1.0893,
+        0.4139
+       ],
+       "route_length_m": 1.948,
+       "route_ok": true
+      },
+      "model_claim": {
+       "claim_conflicts_measurement": false,
+       "recommendation": "advance",
+       "route_status": "route_available",
+       "target": "station_1"
+      },
+      "owner_agent_id": "navigation_agent.functional_20261123T024024_write",
+      "owner_role": "navigation"
+     },
+     "prior_episode": true,
+     "sha256": "fc01525adec6c5d4c55567d00e308d1ad45e04ef7268b278be08bd0230107675",
+     "source_event_id": "controller_functional_20261123T024024_write_functional_a521b856:434",
+     "step": 4,
+     "task_id": "19f07ef3a5c7f363d4e1e199c463e377307ccb66dd6675a8e34d6e5baab907b2",
+     "trust": "role_owned_mixed_measured_and_untrusted_claim",
+     "world_id": "5c9a947e6e78975c6a9a9af6d9a8aa1ab3523a239e7704a7c5a1e31d0e178095",
+     "writer_id": "navigation_agent.functional_20261123T024024_write"
+    },
+    {
+     "controller_run_id": "controller_functional_20261123T024024_write_functional_a521b856",
+     "episode_id": "functional_20261123T024024_write",
+     "frame_sha256": null,
+     "id": "mem_5fe396198f9a8007aae3d8768c2bfdac",
+     "kind": "role_navigation",
+     "namespace": "functional_20261123T024024",
+     "payload": {
+      "measured": {
+       "arrived_at_target": false,
+       "decision": 6,
+       "pose_after": [
+        0.8798,
+        1.6274,
+        0.4116
+       ],
+       "pose_before": [
+        0.4049,
+        1.3413,
+        0.5896
+       ],
+       "route_length_m": 1.395,
+       "route_ok": true
+      },
+      "model_claim": {
+       "claim_conflicts_measurement": false,
+       "recommendation": "advance",
+       "route_status": "route_available",
+       "target": "station_1"
+      },
+      "owner_agent_id": "navigation_agent.functional_20261123T024024_write",
+      "owner_role": "navigation"
+     },
+     "prior_episode": true,
+     "sha256": "cc73404efa888b6e950d5dcee694eb7e97698b27b7bfe45c13f92e5ec468db53",
+     "source_event_id": "controller_functional_20261123T024024_write_functional_a521b856:514",
+     "step": 5,
+     "task_id": "19f07ef3a5c7f363d4e1e199c463e377307ccb66dd6675a8e34d6e5baab907b2",
+     "trust": "role_owned_mixed_measured_and_untrusted_claim",
+     "world_id": "5c9a947e6e78975c6a9a9af6d9a8aa1ab3523a239e7704a7c5a1e31d0e178095",
+     "writer_id": "navigation_agent.functional_20261123T024024_write"
+    },
+    {
+     "controller_run_id": "controller_functional_20261123T024024_write_functional_a521b856",
+     "episode_id": "functional_20261123T024024_write",
+     "frame_sha256": null,
+     "id": "mem_0862c1e12318bade636063350a0fee7d",
+     "kind": "role_navigation",
+     "namespace": "functional_20261123T024024",
+     "payload": {
+      "measured": {
+       "arrived_at_target": false,
+       "decision": 7,
+       "pose_after": [
+        1.3728,
+        1.8746,
+        0.5623
+       ],
+       "pose_before": [
+        0.8799,
+        1.6272,
+        0.4137
+       ],
+       "route_length_m": 0.841,
+       "route_ok": true
+      },
+      "model_claim": {
+       "claim_conflicts_measurement": false,
+       "recommendation": "advance",
+       "route_status": "route_available",
+       "target": "station_1"
+      },
+      "owner_agent_id": "navigation_agent.functional_20261123T024024_write",
+      "owner_role": "navigation"
+     },
+     "prior_episode": true,
+     "sha256": "b37b8af72b1e5ea2edef360d8fe3f4aca9094c0f411feefd5c88077736d15827",
+     "source_event_id": "controller_functional_20261123T024024_write_functional_a521b856:610",
+     "step": 6,
+     "task_id": "19f07ef3a5c7f363d4e1e199c463e377307ccb66dd6675a8e34d6e5baab907b2",
+     "trust": "role_owned_mixed_measured_and_untrusted_claim",
+     "world_id": "5c9a947e6e78975c6a9a9af6d9a8aa1ab3523a239e7704a7c5a1e31d0e178095",
+     "writer_id": "navigation_agent.functional_20261123T024024_write"
+    },
+    {
+     "controller_run_id": "controller_functional_20261123T024024_write_functional_a521b856",
+     "episode_id": "functional_20261123T024024_write",
+     "frame_sha256": null,
+     "id": "mem_15002a09b76debc579f563f07e3b94d5",
+     "kind": "role_navigation",
+     "namespace": "functional_20261123T024024",
+     "payload": {
+      "measured": {
+       "arrived_at_target": true,
+       "decision": 8,
+       "pose_after": [
+        1.5354,
+        1.9797,
+        0.4932
+       ],
+       "pose_before": [
+        1.3738,
+        1.8751,
+        0.5637
+       ],
+       "route_length_m": 0.289,
+       "route_ok": true
+      },
+      "model_claim": {
+       "claim_conflicts_measurement": false,
+       "recommendation": "advance",
+       "route_status": "route_available",
+       "target": "station_1"
+      },
+      "owner_agent_id": "navigation_agent.functional_20261123T024024_write",
+      "owner_role": "navigation"
+     },
+     "prior_episode": true,
+     "sha256": "c83bf48ace86f9d025727ebbdf403cebae534138c2c7c0cc7d27ed615d12ef6f",
+     "source_event_id": "controller_functional_20261123T024024_write_functional_a521b856:706",
+     "step": 7,
+     "task_id": "19f07ef3a5c7f363d4e1e199c463e377307ccb66dd6675a8e34d6e5baab907b2",
+     "trust": "role_owned_mixed_measured_and_untrusted_claim",
+     "world_id": "5c9a947e6e78975c6a9a9af6d9a8aa1ab3523a239e7704a7c5a1e31d0e178095",
+     "writer_id": "navigation_agent.functional_20261123T024024_write"
+    },
+    {
+     "controller_run_id": "controller_functional_20261123T024024_write_functional_a521b856",
+     "episode_id": "functional_20261123T024024_write",
+     "frame_sha256": null,
+     "id": "mem_2f85c453544519b29a1b3010b57b1a56",
+     "kind": "role_navigation",
+     "namespace": "functional_20261123T024024",
+     "payload": {
+      "measured": {
+       "arrived_at_target": true,
+       "decision": 9,
+       "pose_after": [
+        1.5339,
+        1.9881,
+        0.3914
+       ],
+       "pose_before": [
+        1.5373,
+        1.981,
+        0.4908
+       ],
+       "route_length_m": 0.095,
+       "route_ok": true
+      },
+      "model_claim": {
+       "claim_conflicts_measurement": false,
+       "recommendation": "inspect_ready",
+       "route_status": "route_available",
+       "target": "station_1"
+      },
+      "owner_agent_id": "navigation_agent.functional_20261123T024024_write",
+      "owner_role": "navigation"
+     },
+     "prior_episode": true,
+     "sha256": "7b4e2605b0aba2bc19673f2828aba364b52aedb0c2c1af1c54486fc29529eb4f",
+     "source_event_id": "controller_functional_20261123T024024_write_functional_a521b856:819",
+     "step": 8,
+     "task_id": "19f07ef3a5c7f363d4e1e199c463e377307ccb66dd6675a8e34d6e5baab907b2",
+     "trust": "role_owned_mixed_measured_and_untrusted_claim",
+     "world_id": "5c9a947e6e78975c6a9a9af6d9a8aa1ab3523a239e7704a7c5a1e31d0e178095",
+     "writer_id": "navigation_agent.functional_20261123T024024_write"
+    },
+    {
+     "controller_run_id": "controller_functional_20261123T024024_write_functional_a521b856",
+     "episode_id": "functional_20261123T024024_write",
+     "frame_sha256": null,
+     "id": "mem_35d2417b3999d3ca4d6d92c4c67254b3",
+     "kind": "role_navigation",
+     "namespace": "functional_20261123T024024",
+     "payload": {
+      "measured": {
+       "arrived_at_target": null,
+       "decision": 10,
+       "pose_after": [
+        1.534,
+        1.988,
+        0.3929
+       ],
+       "pose_before": [
+        1.534,
+        1.988,
+        0.3929
+       ],
+       "route_length_m": 0.095,
+       "route_ok": true
+      },
+      "model_claim": {
+       "claim_conflicts_measurement": false,
+       "recommendation": "inspect_ready",
+       "route_status": "route_available",
+       "target": "station_1"
+      },
+      "owner_agent_id": "navigation_agent.functional_20261123T024024_write",
+      "owner_role": "navigation"
+     },
+     "prior_episode": true,
+     "sha256": "b275fd69570929cc8af4f13fb6e690bddb3aec603bdc6b3fbf9c2242a6be0e5e",
+     "source_event_id": "controller_functional_20261123T024024_write_functional_a521b856:914",
+     "step": 9,
+     "task_id": "19f07ef3a5c7f363d4e1e199c463e377307ccb66dd6675a8e34d6e5baab907b2",
+     "trust": "role_owned_mixed_measured_and_untrusted_claim",
+     "world_id": "5c9a947e6e78975c6a9a9af6d9a8aa1ab3523a239e7704a7c5a1e31d0e178095",
+     "writer_id": "navigation_agent.functional_20261123T024024_write"
+    }
+   ],
+   "revision": 48,
+   "snapshot_sha256": "9b0bafe3a8a2e88d333107a12ba7d4ac54fbb9bc33eba0d26f7b48811377483c",
+   "store_id": "store_64d9befcc8ad42bca0ef8d30a0187a3c",
+   "task_id": "19f07ef3a5c7f363d4e1e199c463e377307ccb66dd6675a8e34d6e5baab907b2",
+   "world_id": "5c9a947e6e78975c6a9a9af6d9a8aa1ab3523a239e7704a7c5a1e31d0e178095"
+  },
+  "measured_navigation_tools": {
+   "pose": {
+    "pose": [
+     -2.0666,
+     0.0154,
+     -0.0944
+    ]
+   },
+   "targets": {
+    "station_1": {
+     "distance_to_estimated_m": 4.2138,
+     "distance_to_operator_m": 4.1693,
+     "at_target": false,
+     "inspection_executed": false
+    },
+    "station_2": {
+     "distance_to_estimated_m": 4.793,
+     "distance_to_operator_m": 4.7278,
+     "at_target": false,
+     "inspection_executed": false
+    },
+    "station_3": {
+     "distance_to_estimated_m": 5.4493,
+     "distance_to_operator_m": 5.4149,
+     "at_target": false,
+     "inspection_executed": false
+    }
+   },
+   "routes": {
+    "station_1": {
+     "ok": true,
+     "planner": "planner.plan (existing A*)",
+     "length_m": 4.214,
+     "waypoints": 1,
+     "goal": [
+      1.63,
+      2.038
+     ],
+     "next_segment": {
+      "ok": true,
+      "commanded": [
+       -1.4964,
+       0.3274,
+       0.5006
+      ],
+      "segment_m": 0.65,
+      "inside_territory": true,
+      "segment_max_m": 0.65
+     }
+    },
+    "station_2": {
+     "ok": true,
+     "planner": "planner.plan (existing A*)",
+     "length_m": 4.793,
+     "waypoints": 1,
+     "goal": [
+      1.612,
+      3.088
+     ],
+     "next_segment": {
+      "ok": true,
+      "commanded": [
+       -1.5678,
+       0.4321,
+       0.6959
+      ],
+      "segment_m": 0.65,
+      "inside_territory": true,
+      "segment_max_m": 0.65
+     }
+    },
+    "station_3": {
+     "ok": true,
+     "planner": "planner.plan (existing A*)",
+     "length_m": 5.449,
+     "waypoints": 1,
+     "goal": [
+      1.593,
+      4.053
+     ],
+     "next_segment": {
+      "ok": true,
+      "commanded": [
+       -1.6301,
+       0.497,
+       0.8345
+      ],
+      "segment_m": 0.65,
+      "inside_territory": true,
+      "segment_max_m": 0.65
+     }
+    }
+   }
+  },
+  "arrival_tolerance_m": 0.28,
+  "segment_max_m": 0.65
+ },
+ "output": {
+  "target": "station_1",
+  "route_status": "route_available",
+  "recommendation": "inspect_ready",
+  "note": "The robot is within arrival tolerance (0.28m) of station_1 and should execute inspection."
+ },
+ "sourceLedgerPath": "functional-agents/functional_20261123T024024/functional_20261123T024024_reopen/ledger_full.json"
+}
