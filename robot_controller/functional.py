@@ -504,6 +504,8 @@ class FunctionalRuntime:
         if agent.ROLE == "safety":
             d["proposal"]["reviewed"] = True
             d["safety"] = out
+            if not out["admitted"]:
+                d["last_rejection_seq"] = len(d["handoffs"]) - 1
             self.ledger.emit("safety_decision", agent.agent_id, (h["event_id"],), decision=d["decision"],
                              proposal=d["proposal"], **{k: out[k] for k in ("verdict", "concerns", "deterministic_ok", "admitted", "override")},
                              deterministic=evidence)
@@ -512,20 +514,32 @@ class FunctionalRuntime:
         d["evidence"][agent.ROLE] = evidence
 
     # Supervisor --------------------------------------------------------------------------
+    def _reinvocable(self, role):
+        """A role acts again in the same decision only after newer safety feedback (a rejection)."""
+        d = self.d
+        if d["invocations"].get(role, 0) == 0:
+            return True
+        if d["invocations"].get(role, 0) >= self.budgets.invocations_per_role_per_decision:
+            return False
+        last = d["latest"].get(role)
+        rejection = d["last_rejection_seq"]
+        return last is not None and rejection is not None and rejection > d["handoffs"].index(last)
+
     def allowed_next(self):
         d, b = self.d, self.budgets
+        reviewed = bool(d["proposal"] and d["proposal"]["reviewed"])
+        if d["proposal"] and not reviewed:
+            # A pending proposal is reviewed against the evidence it was based on, before anything else.
+            return ["safety"] if sum(d["invocations"].values()) < b.agent_invocations_per_decision else []
         if sum(d["invocations"].values()) >= b.agent_invocations_per_decision:
-            return ["finish"] if d["proposal"] and d["proposal"]["reviewed"] else []
-        opts = []
-        for role in ("camera", "navigation"):
-            if d["invocations"].get(role, 0) < b.invocations_per_role_per_decision:
-                opts.append(role)
-        if "camera" in d["latest"] and "navigation" in d["latest"] and d["invocations"].get("action", 0) < b.invocations_per_role_per_decision \
+            return ["finish"] if reviewed else []
+        opts = [r for r in ("camera", "navigation") if self._reinvocable(r)]
+        if "camera" in d["latest"] and "navigation" in d["latest"] and self._reinvocable("action") \
                 and not (d["proposal"] and not d["proposal"]["reviewed"]):
             opts.append("action")
         if d["proposal"] and not d["proposal"]["reviewed"]:
             opts.append("safety")
-        if d["proposal"] and d["proposal"]["reviewed"]:
+        if reviewed:
             opts.append("finish")
         return opts
 
@@ -533,13 +547,24 @@ class FunctionalRuntime:
         d = self.d
         allowed = self.allowed_next()
         parents = [d["agent_event"] or d["start_event"]]
-        if d["supervisor_calls"] >= self.budgets.supervisor_calls_per_decision or not allowed:
+        if not allowed or d["round"] >= 2 * self.budgets.supervisor_calls_per_decision or \
+                (len(allowed) > 1 and d["supervisor_calls"] >= self.budgets.supervisor_calls_per_decision):
             self.ledger.emit("budget_stop", self.supervisor_id, tuple(parents), decision=d["decision"],
                              reason="supervisor_or_agent_budget", allowed=allowed)
             d["end"] = "budget_end"
             return {"next": None, "done": True}
-        d["supervisor_calls"] += 1
         d["round"] += 1
+        if len(allowed) == 1:
+            # No choice exists; a model call would be ceremony. Recorded as such, not as a model decision.
+            d["route_event"] = self.ledger.emit("route_decision", self.supervisor_id, tuple(parents), decision=d["decision"],
+                round=d["round"], next=allowed[0], allowed=allowed, source="only_allowed_option", reason="single option under evidence rules")
+            d["route"].append(allowed[0]); d["route_sources"].append("only_allowed_option")
+            if allowed[0] == "finish":
+                d["end"] = "finish"
+                return {"next": None, "done": True}
+            d["request"] = "Proceed with your role for this decision."
+            return {"next": allowed[0], "done": False}
+        d["supervisor_calls"] += 1
         memory_trace = None
         task_memory = None
         if self.memory is not None:
@@ -568,8 +593,8 @@ class FunctionalRuntime:
             self.ledger.emit("agent_failed", self.supervisor_id, (eid,), role="supervisor", decision=d["decision"], error=str(exc)[:300])
             raise AgentFailure("supervisor output invalid: %s" % exc) from exc
         d["route_event"] = self.ledger.emit("route_decision", self.supervisor_id, (eid,), decision=d["decision"],
-                                            round=d["round"], next=raw["next"], allowed=allowed, reason=raw["reason"])
-        d["route"].append(raw["next"])
+                                            round=d["round"], next=raw["next"], allowed=allowed, source="supervisor_model", reason=raw["reason"])
+        d["route"].append(raw["next"]); d["route_sources"].append("supervisor_model")
         if raw["next"] == "finish":
             d["end"] = "finish"
             return {"next": None, "done": True}
@@ -585,7 +610,7 @@ class FunctionalRuntime:
             agents={r: {"agent_id": a.agent_id, "state": a.state_ref()} for r, a in self.agents.items()})
         self.d = {"decision": decision, "context": context, "round": 0, "supervisor_calls": 0, "invocations": {},
                   "handoffs": [], "latest": {}, "proposal": None, "safety": None, "frame": None, "evidence": {},
-                  "route": [], "calls": {}, "request": None, "end": None, "start_event": start,
+                  "route": [], "route_sources": [], "last_rejection_seq": None, "calls": {}, "request": None, "end": None, "start_event": start,
                   "agent_event": None, "route_event": start}
         status, error = None, None
         try:
@@ -614,7 +639,7 @@ class FunctionalRuntime:
             else:
                 status = d["end"] or "no_proposal"
         result = {"decision": decision, "status": status, "error": error, "proposal": proposal, "gate": gate,
-                  "route": list(d["route"]), "handoffs": [h["handoff_id"] for h in d["handoffs"]],
+                  "route": list(d["route"]), "route_sources": list(d["route_sources"]), "handoffs": [h["handoff_id"] for h in d["handoffs"]],
                   "model_calls": dict(d["calls"]), "invocations": dict(d["invocations"]),
                   "safety": d["safety"], "agents": {r: a.agent_id for r, a in self.agents.items()}}
         result["event_id"] = self.ledger.emit("decision_proposal", "controller", (d["route_event"],), **result)

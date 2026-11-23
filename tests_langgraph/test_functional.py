@@ -110,21 +110,33 @@ class FunctionalAgentTests(unittest.TestCase):
         self.assertEqual(len(model.calls), 1)
 
     def test_safety_rejection_routes_back_dynamically(self):
-        sup_plan = iter(["camera", "navigation", "action", "safety", "camera", "action", "safety", "finish"])
+        plan = iter(["camera", "camera", "action"])
+        offered = []
         def sup(n, payload, schema):
-            choice = next(sup_plan)
-            self.assertIn(choice, schema["properties"]["next"]["enum"])
+            allowed = schema["properties"]["next"]["enum"]; offered.append(allowed)
+            choice = next(plan); self.assertIn(choice, allowed)
             return {"next": choice, "request": "routing note", "reason": "feedback-driven"}
         safety = [{"verdict": "reject", "concerns": ["camera_disagreement"], "reason": "Re-check the view."}, None]
         model = ScriptedModel({"supervisor": sup, "safety": safety}); rt = runtime(self.dir, model)
         res = rt.decide(1, {"source": "fixture"})
         self.assertEqual(res["route"], ["camera", "navigation", "action", "safety", "camera", "action", "safety", "finish"])
+        self.assertEqual(res["route_sources"].count("supervisor_model"), 3)
+        self.assertEqual(offered[0], ["camera", "navigation"])
+        self.assertEqual(offered[1], ["camera", "navigation", "action", "finish"])   # feedback opens re-planning
+        self.assertEqual(offered[2], ["navigation", "action", "finish"])
         self.assertEqual(res["status"], "proposal_admitted")
         act2 = [c for c in model.calls if c["role"] == "action"][1]["payload"]
         self.assertIn("safety", [h["from_role"] for h in act2["received_handoffs"]])
         cams = [c["frame"] for c in model.calls if c["role"] == "camera"]
         self.assertNotEqual(cams[0], cams[1])
         self.assertEqual([c for c in model.calls if c["role"] == "safety"][1]["frame"], cams[1])
+
+    def test_approved_proposal_cannot_be_replanned_and_single_options_skip_model(self):
+        model = ScriptedModel(); rt = runtime(self.dir, model)
+        res = rt.decide(1, {"source": "fixture"})
+        self.assertEqual(res["route"], ["camera", "navigation", "action", "safety", "finish"])
+        self.assertEqual(res["route_sources"], ["supervisor_model"] + ["only_allowed_option"] * 4)
+        self.assertEqual([c["role"] for c in model.calls], ["supervisor", "camera", "navigation", "action", "safety"])
 
     def test_rejected_proposal_executes_nothing(self):
         def sup(n, payload, schema):
